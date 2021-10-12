@@ -10,6 +10,12 @@ public:
 	}Modifier;
 	class Series{
 	public:
+		Series(){
+			draw = true;
+			ID = -1;
+		}
+		int ID;
+		bool draw;
 		X11::Color color;
 		int width;
 		Modifier modifier;
@@ -17,10 +23,14 @@ public:
 	};
 public:
 	Graph( const char* name, int width, int height );
+	int addSeries( Series &s );
+	void removeSeries( Series &s );
+	void setPadding( int x, int y ){ m_padding = X11::Point( x, y ); }
+
+	void update( float timeSeconds = 0.0 );
+protected:
 	void drawFrame();
 	void render();
-	int addSeries( Series s );
-	void setPadding( int x, int y ){ m_padding = X11::Point( x, y ); }
 private:
 	std::vector<Series> m_series;
 	X11::Point m_padding;
