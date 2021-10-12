@@ -1,4 +1,5 @@
 #include "graph.h"
+#include <stdio.h>
 
 Graph::Graph( const char* name, int width, int height ){
 	m_windowName = name;
@@ -16,7 +17,8 @@ void Graph::drawFrame(){
 
 void Graph::render(){
 	drawFrame();
-	for( int i = 0; i < m_series.size(); i++ ){
+	for( unsigned int i = 0; i < m_series.size(); i++ ){
+		if( m_series[i].draw == false ) continue;
 		int count = m_series[i].points.size();
 		X11::Point* inverted = new X11::Point[count];
 		for( int j = 0; j < count; j++ ){
@@ -32,8 +34,36 @@ void Graph::render(){
 	}
 }
 
-int Graph::addSeries( Series s ){
+/* returns a reference to a series */
+int Graph::addSeries( Series &s ){
+	if( s.ID >= 0 ) return -1;
+	for(int i = 0; i < m_series.size(); i++){
+		if( m_series[i].draw == false ){
+			m_series[i] = s;
+			return s.ID = i;
+		}
+	}
 	m_series.push_back(s);
-	return m_series.size();
+	return s.ID = m_series.size() - 1;
+}
+
+void Graph::removeSeries( Series& s ){
+	m_series[s.ID].draw = false;
+}
+
+void Graph::update( float timeSeconds ){
+	while( XPending(getDisplay()) ){
+		XEvent xev;
+		XNextEvent( getDisplay(), &xev );
+		if( xev.type == Expose ){
+			getAttributes();
+			refresh();
+		}
+		if( xev.type == KeyPress ){
+			m_open = false;
+		}
+	}
+	render();
+	refresh( timeSeconds );
 }
 
