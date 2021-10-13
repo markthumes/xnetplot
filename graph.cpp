@@ -18,7 +18,7 @@ void Graph::drawFrame(){
 void Graph::render(){
 	drawFrame();
 	for( unsigned int i = 0; i < m_series.size(); i++ ){
-		if( m_series[i].draw == false ) continue;
+		if( m_series[i].valid == false ) continue;
 		int count = m_series[i].points.size();
 		X11::Point* inverted = new X11::Point[count];
 		for( int j = 0; j < count; j++ ){
@@ -37,8 +37,8 @@ void Graph::render(){
 /* returns a reference to a series */
 int Graph::addSeries( Series &s ){
 	if( s.ID >= 0 ) return -1;
-	for(int i = 0; i < m_series.size(); i++){
-		if( m_series[i].draw == false ){
+	for(unsigned int i = 0; i < m_series.size(); i++){
+		if( m_series[i].valid == false ){
 			m_series[i] = s;
 			return s.ID = i;
 		}
@@ -48,7 +48,8 @@ int Graph::addSeries( Series &s ){
 }
 
 void Graph::removeSeries( Series& s ){
-	m_series[s.ID].draw = false;
+	m_series[s.ID].valid = false;
+	m_series[s.ID].points.clear();
 }
 
 void Graph::update( float timeSeconds ){

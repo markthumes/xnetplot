@@ -11,11 +11,11 @@ public:
 	class Series{
 	public:
 		Series(){
-			draw = true;
+			valid = true;
 			ID = -1;
 		}
 		int ID;
-		bool draw;
+		bool valid;
 		X11::Color color;
 		int width;
 		Modifier modifier;
