@@ -18,6 +18,7 @@ void Graph::drawFrame(){
 void Graph::render(){
 	drawFrame();
 	for( unsigned int i = 0; i < m_series.size(); i++ ){
+		if( m_series[i] == NULL ) continue;
 		if( m_series[i]->valid == false ) continue;
 		int count = m_series[i]->points.size();
 		X11::Point* inverted = new X11::Point[count];
@@ -36,8 +37,14 @@ void Graph::render(){
 }
 
 int Graph::addSeries( Series* s ){
+	for( int i = 0; i < m_series.size(); i++ ){
+		if( m_series[i] == NULL ){
+			m_series[i] = s;
+			return s->ID = i;
+		}
+	}
 	m_series.push_back(s);
-	return s->ID = m_series.size();
+	return s->ID = m_series.size() - 1;
 }
 
 void Graph::removeSeries( Series s ){
@@ -47,11 +54,7 @@ void Graph::removeSeries( Series* s ){
 	removeSeries( s->ID );
 }
 void Graph::removeSeries( int id ){
-	for( unsigned int i = id; i < m_series.size(); i++ ){
-		m_series[i] = m_series[i+1]; //shift series left
-		m_series[i]->ID = i;         //change ID handle
-	}
-	if( m_series.size() > 0 ) m_series.pop_back(); //remove last pointer
+	m_series[id] = NULL;
 }
 
 void Graph::update( float timeSeconds ){
