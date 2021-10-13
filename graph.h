@@ -15,6 +15,8 @@ public:
 			valid = true;
 			ID = -1;
 			modifier = Points;
+			color = X11::Color(1,1,1);
+			width = 1;
 		}
 		int ID;
 		bool valid;
@@ -25,19 +27,19 @@ public:
 	};
 public:
 	Graph( const char* name, int width, int height );
-	int addSeries( Series &s );
 	int addSeries( Series *s );
-	void removeSeries( Series &s );
+	void removeSeries( Series  s );
+	void removeSeries( Series *s );
+	void removeSeries( int id );
 	void setPadding( int x, int y ){ m_padding = X11::Point( x, y ); }
+	~Graph();
 
 	void update( float timeSeconds = 0.0 );
 protected:
 	void drawFrame();
 	void render();
 private:
-	std::vector<Series>  m_series;
-	Series** m_dynamicSeries;
-	int m_dynamicSeriesCount;
+	std::vector<Series*> m_series;
 	X11::Point m_padding;
 	X11::Point m_origin;
 };
