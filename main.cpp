@@ -3,38 +3,32 @@
 #include <unistd.h>
 
 int main(){
-	float frate = 1.0/120.0;
+	float frate = 1.0/60.0;
 	Graph g("New Window", 1000, 1000);
 	g.open();
 	g.setBackground( X11::Color(0,0,0) );
 	g.setDoubleBuffered();
 
 
-	Graph::Series s[3];
-	s[0].color = X11::Color(0,1,1);
-	s[0].width = 3;
-	s[0].modifier = Graph::Lines;
-	for( int i = -100; i < 100; i++ ){
-		s[0].points.push_back( X11::Point( i, i*i/10 ) );
+	Graph::Series s[10];
+	for( int i = 0; i < 10; i++ ){
+		for( int j = 0; j < 100; j++ ){
+			s[i].modifier = Graph::Lines;
+			s[i].points.push_back(X11::Point(j, i*j));
+		}
+		g.addSeries(&s[i]);
 	}
-	g.addSeries( s[0] );
-
-	s[1].color = X11::Color(1,1,0);
-	s[1].modifier = Graph::Points;
-	for( int i = 0; i < 100; i++ ){
-		s[1].points.push_back( X11::Point( i*4, i ) );
-	}
-	g.addSeries( s[1] );
-
-	s[2].color = X11::Color(1,0,1);
-	s[2].modifier = Graph::Lines;
-	for(int i = -100; i < 100; i++ ){
-		s[2].points.push_back( X11::Point( i*i, 10 + i ));
-	}
-	g.addSeries( s[2] );
 
 	g.setPadding( 100, 100 );
+#if 0
+	g.removeSeries(1);
+	g.removeSeries(3);
+	g.removeSeries(5);
+	g.removeSeries(7);
+#endif
+	int frame = 0;
 	while(g.isOpen()){
+		s[0].points.push_back(X11::Point(frame, frame++));
 		g.update(frate);
 	}
 	g.close();
