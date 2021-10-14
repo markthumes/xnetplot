@@ -24,6 +24,10 @@ public:
 		int width;
 		Modifier modifier;
 		std::vector<X11::Point> points;
+		bool redraw;
+		void addPoint( X11::Point p ){
+			points.push_back(p);
+		}
 	};
 public:
 	Graph( const char* name, int width, int height );
